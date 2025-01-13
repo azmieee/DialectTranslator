@@ -37,5 +37,5 @@ const maranaoDictionary = {
     "this": "kataya",
     "good": "mapiya",
     "good_ng": "mapiya",
-    "you": "sa r'ka",
+    "you": "sa r' ka",
 };

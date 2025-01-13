@@ -37,5 +37,5 @@ const maguindanaonDictionary = {
     "this": "niya",
     "good": "mapiya",
     "good_ng": "mapiya",
-    "you": "sa l'ka",
+    "you": "sa l' ka",
 };
