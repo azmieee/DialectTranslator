@@ -35,5 +35,4 @@ const maguindanaonDictionary = {
     "let's go": "syakon",
     "house": "walay",
     "this": "niya",
-    // Add more Maguindanaon translations
 };

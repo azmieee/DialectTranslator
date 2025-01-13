@@ -35,5 +35,4 @@ const maranaoDictionary = {
     "let's go": "taroodun",
     "house": "walay",
     "this": "kataya",
-    // Add more Maranao translations
 };

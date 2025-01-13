@@ -35,5 +35,5 @@ const tagalogDictionary = {
     "let's go": "tara na",
     "house": "bahay",
     "this": "heto",
-    // Add more Tagalog translations
+
 };
