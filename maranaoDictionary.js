@@ -10,8 +10,8 @@ const maranaoDictionary = {
     "I like you": "p'kababayan 'n'ken seka",
     "you": "seka",
     "why": "antuna",
-    "he/she": "saya",
-    "I/me": "sa'kun",
+    "he/she": "s'kaniyan",
+    "I/me": "sak'n",
     "where": "andu",
     "how": "panon",
     "yes": "oway",
@@ -34,5 +34,6 @@ const maranaoDictionary = {
     "good noon": "mapiya mapolid",
     "let's go": "taroodun",
     "house": "walay",
+    "this": "kataya",
     // Add more Maranao translations
 };
