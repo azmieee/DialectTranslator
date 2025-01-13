@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Language Translator</title>
+    <link rel="icon" href="images/image.png" />
+</head>
+
+<body>
+    <div class="mode">
+        <label class="toggle" for="dark-mode-btn">
+            <div class="toggle-track">
+                <input type="checkbox" class="toggle-checkbox" id="dark-mode-btn" />
+                <span class="toggle-thumb"></span>
+                <img src="images/sun.png" alt="" />
+                <img src="images/moon.png" alt="" />
+            </div>
+        </label>
+    </div>
+
+    <div class="header-text">
+        <img src="images/image.png" alt="Translator Logo" class="header-image" />
+        <h1>BILINGUAL TRANSLATOR PLATFORM: TAGALOG TO MAGUINDANAON <br>TO MARANAO DIALECTS</h1>
+        <p>Features: Free access translator, translate in audio and text copy automated button.</p>
+    </div>
+
+
+    <div class="container">
+        <div class="card input-wrapper">
+            <div class="from">
+                <span class="heading">From :</span>
+                <div class="dropdown-container" id="input-language">
+                    <div class="dropdown-toggle">
+                        <ion-icon name="globe-outline"></ion-icon>
+                        <span class="selected" data-value="auto">Select Language</span>
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li class="option active">DropDown Menu Item 1</li>
+                        <li class="option">DropDown Menu Item 2</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-area">
+                <textarea id="input-text" cols="30" rows="10" placeholder="Enter your text here"></textarea>
+                <div class="copy-wrapper">
+
+                    <button id="translate-btn">
+                        <span>Translate</span>
+                        <ion-icon name="language-outline"></ion-icon>
+                    </button>
+
+                </div>
+                <div class="chars"><span id="input-chars">0</span> / 5000</div>
+            </div>
+            <div class="card-bottom">
+                <div class="">
+                    <button id="voice-to-text-btn">
+                        <span>Voice Input</span>
+                        <ion-icon name="mic-outline"></ion-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="center">
+            <div class="swap-position">
+                <ion-icon name="swap-horizontal-outline"></ion-icon>
+            </div>
+        </div>
+
+
+        <div class="card output-wrapper">
+            <div class="to">
+                <span class="heading">To :</span>
+                <div class="dropdown-container" id="output-language">
+                    <div class="dropdown-toggle">
+                        <ion-icon name="globe-outline"></ion-icon>
+                        <span class="selected" data-value="en">Select Language</span>
+                        <ion-icon name="chevron-down-outline"></ion-icon>
+                    </div>
+                    <ul class="dropdown-menu">
+                        <li class="option active">DropDown Menu Item 1</li>
+                        <li class="option">DropDown Menu Item 2</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-area">
+                <textarea id="output-text" cols="30" rows="10" placeholder="Translated text will appear here" disabled></textarea>
+                <div class="copy-wrapper">
+                    <ion-icon id="copy-output-btn" name="copy-outline"></ion-icon>
+                    <span id="copy-output-message" class="copy-message">Copied!</span>
+                </div>
+            </div>
+            <div class="card-bottom">
+                <div class="">
+                    <button id="text-to-voice-btn">
+                        <span>Sound</span>
+                        <ion-icon name="volume-high-outline"></ion-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="languages.js"></script>
+    <script src="script.js"></script>
+    <script src="maguindanaonDictionary.js"></script>
+    <script src="maranaoDictionary.js"></script>
+    <script src="tagalogDictionary.js"></script>
+
+    <script>
+        document.getElementById('copy-output-btn').addEventListener('click', function() {
+            var textToCopy = document.getElementById('output-text').value;
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                var copyWrapper = document.getElementById('copy-output-btn').parentElement;
+                var copyMessage = document.getElementById('copy-output-message');
+                copyWrapper.classList.add('show-message');
+
+                setTimeout(function() {
+                    copyWrapper.classList.remove('show-message');
+                }, 2000); // Hide the message after 2 seconds
+            }).catch(function(error) {
+                console.error('Could not copy text: ', error);
+            });
+        });
+        let recognition;
+        let isRecording = false;
+
+        // Initialize speech recognition
+        function initRecognition() {
+            if (!recognition) {
+                recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'fil-PH'; // Set the language to Filipino (Tagalog)
+                recognition.interimResults = true; // Enable interim results for live transcription
+
+                recognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    document.getElementById('input-text').value = transcript; // Update the text box live
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Voice recognition error:', event.error);
+                    alert("Error in voice recognition: " + event.error);
+                };
+
+                recognition.onend = function() {
+                    if (isRecording) {
+                        // Automatically stop recording if recognition ends
+                        stopRecognition();
+                    }
+                };
+            }
+        }
+
+        // Start voice recognition
+        function startRecognition() {
+            initRecognition();
+            recognition.start();
+            isRecording = true;
+
+            // Change button text to "Stop Listening"
+            document.querySelector('#voice-to-text-btn span').textContent = "Stop Listening...";
+            document.querySelector('#voice-to-text-btn ion-icon').name = "mic-off-outline";
+        }
+
+        // Stop voice recognition
+        function stopRecognition() {
+            recognition.stop();
+            isRecording = false;
+
+            // Revert button text back to "Voice Input"
+            document.querySelector('#voice-to-text-btn span').textContent = "Voice Input";
+            document.querySelector('#voice-to-text-btn ion-icon').name = "mic-outline";
+        }
+
+        // Toggle voice recognition on button click
+        const voiceBtn = document.getElementById('voice-to-text-btn');
+        voiceBtn.addEventListener('click', () => {
+            if (isRecording) {
+                stopRecognition();
+            } else {
+                startRecognition();
+            }
+        });
+
+        // Text to Voice functionality
+        document.getElementById('text-to-voice-btn').addEventListener('click', function() {
+            var textToRead = document.getElementById('output-text').value;
+            var speech = new SpeechSynthesisUtterance(textToRead);
+            speech.lang = 'fil-PH'; // Set the language to Filipino (Tagalog)
+            window.speechSynthesis.speak(speech);
+        });
+
+        // Trigger translate function on button click
+        document.getElementById('translate-btn').addEventListener('click', translate);
+    </script>
+</body>
+
+</html>
